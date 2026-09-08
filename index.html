@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Star Gaming Upcoming Event</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+  }
+  body {
+    background: #fdf2f6;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+  #sg-root {
+    --bg: #fdf2f6;
+    --panel: #ffffff;
+    --line: #f4d9e4;
+    --text: #221a26;
+    --text-muted: #6d5c67;
+    --accent: #e85d8a;
+    --accent-soft: rgba(232, 93, 138, 0.12);
+    --accent-ink: #ffffff;
+    --accent2: #c2185b;
+    --success: #16a34a;
+    --danger: #ff6b6b;
+    --radius: 18px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    display: flex;
+    justify-content: center;
+    padding: 28px 14px 40px;
+    box-sizing: border-box;
+    min-height: 100%;
+    position: relative;
+    overflow-x: hidden;
+  }
+  #sg-root * { box-sizing: border-box; }
+  #sg-root .starfield {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(480px circle at 12% 0%, rgba(232,93,138,0.14), transparent 60%),
+      radial-gradient(420px circle at 100% 25%, rgba(232,93,138,0.10), transparent 60%);
+    pointer-events: none;
+  }
+  #sg-root .console {
+    position: relative;
+    width: 100%; max-width: 440px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 20px 50px rgba(232, 93, 138, 0.12);
+    overflow: hidden;
+  }
+  #sg-root .hero {
+    padding: 26px 24px 20px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(232,93,138,0.08), transparent 70%);
+  }
+  #sg-root .badge {
+    display: inline-block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--accent-ink);
+    background: var(--accent);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  #sg-root h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1.15;
+    margin: 14px 0 8px;
+  }
+  #sg-root .tagline {
+    color: var(--text-muted);
+    font-size: 15.5px;
+    line-height: 1.6;
+    margin: 0 0 14px;
+    max-width: 34ch;
+  }
+  #sg-root .prize-line {
+    font-size: 14.5px;
+    color: var(--text-muted);
+  }
+  #sg-root .prize-line strong {
+    color: var(--accent);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+  }
+
+  #sg-root form.form { padding: 22px 24px 8px; }
+  #sg-root .field { margin-bottom: 20px; }
+  #sg-root .field label {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  #sg-root input[type="text"],
+  #sg-root select,
+  #sg-root textarea {
+    width: 100%;
+    background: #fdf7fa;
+    border: 1.5px solid var(--line);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 16px;
+    padding: 12px 13px;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  #sg-root textarea { resize: vertical; min-height: 56px; }
+  #sg-root input[type="text"]:focus,
+  #sg-root select:focus,
+  #sg-root textarea:focus {
+    border-color: var(--accent);
+  }
+  #sg-root select { appearance: none; cursor: pointer; }
+  /* "real select" feedback: once a real value is chosen, the field itself turns pink */
+  #sg-root select.has-value {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent2);
+    font-weight: 600;
+    box-shadow: 0 0 0 3px rgba(232, 93, 138, 0.12);
+  }
+  #sg-root .field.select-wrap { position: relative; }
+  #sg-root .field.select-wrap::after {
+    content: "";
+    position: absolute; right: 16px; top: 42px;
+    width: 8px; height: 8px;
+    border-right: 2px solid var(--text-muted);
+    border-bottom: 2px solid var(--text-muted);
+    transform: rotate(45deg);
+    pointer-events: none;
+    transition: border-color .15s ease;
+  }
+  #sg-root .field.select-wrap.has-value::after {
+    border-color: var(--accent2);
+  }
+
+  #sg-root .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  #sg-root .chip {
+    background: #fdf7fa;
+    border: 1.5px solid var(--line);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 600;
+    padding: 9px 15px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  /* real, unmistakable "selected" look: solid pink fill, not just a tint */
+  #sg-root .chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(232, 93, 138, 0.35);
+    transform: translateY(-1px);
+  }
+  #sg-root .chip.active::before {
+    content: "✓ ";
+    font-weight: 700;
+  }
+
+  #sg-root .segmented { margin-top: 10px; }
+  #sg-root .segmented-label {
+    display: block;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  #sg-root .segmented-options { display: flex; gap: 8px; }
+  #sg-root .seg-btn {
+    flex: 1;
+    background: #fdf7fa;
+    border: 1.5px solid var(--line);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 600;
+    padding: 10px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  #sg-root .seg-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(232, 93, 138, 0.35);
+    transform: translateY(-1px);
+  }
+  #sg-root .seg-btn.active::before {
+    content: "✓ ";
+    font-weight: 700;
+  }
+
+  #sg-root details.terms {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+  }
+  #sg-root details.terms summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--accent2);
+  }
+  #sg-root details.terms ol {
+    margin: 12px 0 0;
+    padding-left: 18px;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  #sg-root details.terms li { margin-bottom: 6px; }
+
+  #sg-root label.agree {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 14.5px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  #sg-root label.agree input { margin-top: 3px; accent-color: var(--accent); }
+
+  #sg-root .submit-btn {
+    width: 100%;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 15.5px;
+    border: none;
+    padding: 14px 0;
+    border-radius: 12px;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+  }
+  #sg-root .submit-btn:active { transform: scale(0.99); }
+  #sg-root .submit-btn:disabled { opacity: 0.85; cursor: default; }
+  #sg-root .submit-btn .btn-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 9px;
+    vertical-align: -3px;
+    border: 2.5px solid rgba(255,255,255,0.45);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: sg-spin 0.65s linear infinite;
+  }
+  #sg-root .submit-btn.loading {
+    animation: sg-pulse 1.1s ease-in-out infinite;
+  }
+  @keyframes sg-spin { to { transform: rotate(360deg); } }
+  @keyframes sg-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(232, 93, 138, 0.45); }
+    50% { box-shadow: 0 0 0 8px rgba(232, 93, 138, 0); }
+  }
+
+  #sg-root .form-error {
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  /* ---- cute success screen ---- */
+  #sg-root .confirm {
+    padding: 34px 24px 26px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #sg-root .confetti-piece {
+    position: absolute;
+    top: -12px;
+    font-size: 18px;
+    animation: sg-fall 1.8s ease-in forwards;
+    opacity: 0.95;
+  }
+  @keyframes sg-fall {
+    to { transform: translateY(220px) rotate(200deg); opacity: 0; }
+  }
+  #sg-root .confirm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(22, 163, 74, 0.12);
+    color: var(--success);
+    font-weight: 700;
+    font-size: 14px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+    animation: sg-pop .4s cubic-bezier(.34,1.56,.64,1);
+  }
+  #sg-root .confirm-ticket-label {
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  #sg-root .confirm-code {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    animation: sg-pop .45s .05s cubic-bezier(.34,1.56,.64,1) backwards;
+  }
+  @keyframes sg-pop {
+    0% { opacity: 0; transform: scale(.7); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  #sg-root .confirm-msg {
+    margin: 14px 0 4px;
+    font-size: 15.5px;
+    font-weight: 600;
+  }
+  #sg-root .confirm-sub {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    margin: 0 0 4px;
+  }
+  #sg-root .confirm-count { color: var(--text-muted); font-size: 13px; }
+
+  #sg-root footer.support {
+    padding: 16px 24px;
+    border-top: 1px solid var(--line);
+  }
+  #sg-root .support-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+  #sg-root .support-line strong { color: var(--text); font-weight: 500; }
+
+  #sg-root .admin-link {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 10px 24px 18px;
+    cursor: pointer;
+    text-align: center;
+  }
+  #sg-root .admin-panel { padding: 0 24px 22px; }
+  #sg-root .admin-gate { display: flex; gap: 8px; }
+  #sg-root .admin-gate input {
+    flex: 1;
+    background: #fdf7fa;
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 9px 10px;
+    border-radius: 9px;
+    font-size: 13.5px;
+  }
+  #sg-root .admin-gate button {
+    background: var(--accent2);
+    color: #ffffff;
+    border: none;
+    padding: 0 16px;
+    border-radius: 9px;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+  }
+  #sg-root .admin-error { color: var(--danger); font-size: 12.5px; margin-top: 8px; }
+  #sg-root .admin-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+  #sg-root .admin-toolbar-btns { display: flex; gap: 8px; }
+  #sg-root .admin-toolbar-btns button {
+    flex: 1;
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--accent2);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  #sg-root .admin-toolbar-btns button.copied { color: var(--success); border-color: var(--success); }
+  #sg-root .admin-entry {
+    border-top: 1px solid var(--line);
+    padding: 12px 0;
+    font-size: 13px;
+  }
+  #sg-root .admin-entry .row1 { font-weight: 600; margin-bottom: 3px; }
+  #sg-root .admin-entry .row2 { color: var(--text-muted); line-height: 1.5; }
+  #sg-root .admin-empty { color: var(--text-muted); font-size: 13px; padding-top: 12px; }
+</style>
+</head>
+<body>
+
+<div id="sg-root">
+  <div class="starfield"></div>
+  <main class="console">
+    <header class="hero">
+      <span class="badge">1:00 – 4:00 AM</span>
+      <h1>Star Gaming<br>Upcoming Event</h1>
+      <p class="tagline">Fill this in to lock a slot for the upcoming night session.</p>
+      <div class="prize-line">Prize pool <strong>Above ₹1000</strong></div>
+    </header>
+
+    <form id="regForm" class="form" novalidate>
+      <div class="field">
+        <label for="f-name">1. Name</label>
+        <input id="f-name" type="text" placeholder="Your full name" required>
+      </div>
+
+      <div class="field">
+        <label for="f-userid">2. User ID / User name</label>
+        <input id="f-userid" type="text" placeholder="In-game ID or username" required>
+      </div>
+
+      <div class="field">
+        <label>3. Which game are you interested in?</label>
+        <div class="chip-group" id="gameChips">
+          <button type="button" class="chip" data-value="Lottery">Lottery</button>
+          <button type="button" class="chip" data-value="Mute Unmute">Mute Unmute</button>
+          <button type="button" class="chip" data-value="Bomber">Bomber</button>
+          <button type="button" class="chip" data-value="Spy">Spy</button>
+          <button type="button" class="chip" data-value="Mafiya">Mafiya</button>
+          <button type="button" class="chip" data-value="Partner Call">Partner Call</button>
+        </div>
+        <div class="segmented">
+          <span class="segmented-label">Have you played these games before?</span>
+          <div class="segmented-options" data-group="played">
+            <button type="button" class="seg-btn" data-value="Yes">Yes</button>
+            <button type="button" class="seg-btn" data-value="No">No</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field select-wrap" id="timeFieldWrap">
+        <label for="f-time">4. How much time is available?</label>
+        <select id="f-time" required>
+          <option value="" disabled selected>Choose one</option>
+          <option>1 hour</option>
+          <option>2 hours</option>
+          <option>3 hours</option>
+          <option>Full 1 AM – 4 AM</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>5. Can you speak at night, 1:00 to 4:00?</label>
+        <div class="segmented-options" data-group="nightSpeak">
+          <button type="button" class="seg-btn" data-value="Yes">Yes</button>
+          <button type="button" class="seg-btn" data-value="No">No</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="f-query">6. Any query, suggestion or help needed?</label>
+        <textarea id="f-query" rows="2" placeholder="Type your query, suggestion or help request" required></textarea>
+      </div>
+
+      <details class="terms">
+        <summary>Terms &amp; conditions</summary>
+        <ol>
+          <li>Details cannot be changed after registration — please fill in accurate information.</li>
+          <li>Following the timing (1 AM – 4 AM) is compulsory; late arrivals will not be included.</li>
+          <li>Fair play is required — hacking, cheating or third-party tools mean instant disqualification.</li>
+          <li>The admin/host's decision is final in case of any dispute during the event.</li>
+          <li>Prize distribution will be completed within the decided timeline after winners are announced.</li>
+          <li>Behavior toward all participants must be respectful — no abusive language or toxicity.</li>
+          <li>Organizers are not responsible for technical issues such as server lag or disconnection.</li>
+          <li>Organizers reserve the right to change rules, timing, or format at the last minute.</li>
+          <li>Submitting this form means you agree to all the terms above.</li>
+        </ol>
+      </details>
+
+      <label class="agree">
+        <input type="checkbox" id="f-agree">
+        <span>I've read and agree to the terms above.</span>
+      </label>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Lock in my spot</button>
+      <p class="form-error" id="formError" hidden></p>
+    </form>
+
+    <section class="confirm" id="confirmPanel" hidden>
+      <div id="confettiLayer"></div>
+      <div class="confirm-badge">🎉 Registered Successfully!</div>
+      <div class="confirm-ticket-label">YOUR TICKET</div>
+      <div class="confirm-code" id="confirmCode">SG-000</div>
+      <p class="confirm-msg">You're locked in for the 1–4 AM run 🌙</p>
+      <p class="confirm-sub">Screenshot this ticket — show it to the host if asked.</p>
+      <p class="confirm-count" id="confirmCount"></p>
+    </section>
+
+    <footer class="support">
+      <div class="support-line">
+        <span>Help / suggestions</span>
+        <strong>Shivansh · 777</strong>
+      </div>
+    </footer>
+
+    <button type="button" class="admin-link" id="adminLink">Organizer sign-in</button>
+    <div class="admin-panel" id="adminPanel" hidden>
+      <div class="admin-gate">
+        <input type="text" id="adminCode" placeholder="Passcode">
+        <button type="button" id="adminSubmit">View</button>
+      </div>
+      <p class="admin-error" id="adminError" hidden>Incorrect passcode.</p>
+      <div class="admin-toolbar" id="adminToolbar" hidden>
+        <span id="adminCountLabel"></span>
+        <div class="admin-toolbar-btns">
+          <button type="button" id="adminCopy">Copy as text</button>
+          <button type="button" id="adminExport">Download Excel</button>
+        </div>
+      </div>
+      <div id="adminList"></div>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function () {
+  // SheetDB API URL — paste your endpoint from sheetdb.io here (see setup notes)
+  const SHEETDB_URL = 'https://sheetdb.io/api/v1/r1re5juw2j6ev';
+  // Passcode for the "Organizer sign-in" panel below
+  const ADMIN_PASSCODE = '935153';
+
+  const root = document.getElementById('sg-root');
+  const form = root.querySelector('#regForm');
+  const submitBtn = root.querySelector('#submitBtn');
+  const formError = root.querySelector('#formError');
+
+  function escapeHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function setupSegmented(groupEl) {
+    const buttons = groupEl.querySelectorAll('.seg-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        groupEl.dataset.selected = btn.dataset.value;
+      });
+    });
+  }
+  root.querySelectorAll('[data-group]').forEach(setupSegmented);
+
+  root.querySelectorAll('#gameChips .chip').forEach(chip => {
+    chip.addEventListener('click', () => chip.classList.toggle('active'));
+  });
+
+  // real pink "selected" feedback on the time dropdown
+  const timeSelect = root.querySelector('#f-time');
+  const timeFieldWrap = root.querySelector('#timeFieldWrap');
+  timeSelect.addEventListener('change', () => {
+    const chosen = !!timeSelect.value;
+    timeSelect.classList.toggle('has-value', chosen);
+    timeFieldWrap.classList.toggle('has-value', chosen);
+  });
+
+  function getSegValue(name) {
+    const el = root.querySelector('[data-group="' + name + '"]');
+    return el ? (el.dataset.selected || '') : '';
+  }
+
+  function launchConfetti() {
+    const layer = root.querySelector('#confettiLayer');
+    if (!layer) return;
+    const emojis = ['🎉', '✨', '🎮', '💖', '🌟'];
+    layer.innerHTML = '';
+    for (let i = 0; i < 16; i++) {
+      const piece = document.createElement('span');
+      piece.className = 'confetti-piece';
+      piece.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      piece.style.left = (Math.random() * 92) + '%';
+      piece.style.animationDelay = (Math.random() * 0.5) + 's';
+      piece.style.fontSize = (14 + Math.random() * 12) + 'px';
+      layer.appendChild(piece);
+    }
+    setTimeout(() => { layer.innerHTML = ''; }, 2400);
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    formError.hidden = true;
+
+    const name = root.querySelector('#f-name').value.trim();
+    const userid = root.querySelector('#f-userid').value.trim();
+    const game = Array.from(root.querySelectorAll('#gameChips .chip.active')).map(c => c.dataset.value).join(', ');
+    const time = root.querySelector('#f-time').value;
+    const query = root.querySelector('#f-query').value.trim();
+    const played = getSegValue('played');
+    const nightSpeak = getSegValue('nightSpeak');
+    const agreed = root.querySelector('#f-agree').checked;
+
+    if (!name || !userid || !game || !time || !played || !nightSpeak || !query) {
+      formError.textContent = game ? 'Please fill in every required field.' : 'Please select at least one game.';
+      formError.hidden = false;
+      return;
+    }
+    if (!agreed) {
+      formError.textContent = 'Please agree to the terms to continue.';
+      formError.hidden = false;
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.classList.add('loading');
+    submitBtn.innerHTML = '<span class="btn-spinner"></span>Locking in...';
+
+    const row = {
+      Timestamp: new Date().toISOString(),
+      Name: name,
+      'User ID': userid,
+      Game: game,
+      'Played Before': played,
+      'Time Available': time,
+      'Night Speak': nightSpeak,
+      Note: query
+    };
+
+    let total = 0;
+    try {
+      const postRes = await fetch(SHEETDB_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: row })
+      });
+      if (!postRes.ok) throw new Error('save failed');
+    } catch (err) {
+      formError.textContent = 'Something went wrong saving your entry. Please try again.';
+      formError.hidden = false;
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('loading');
+      submitBtn.textContent = 'Lock in my spot';
+      return;
+    }
+
+    // Entry is already saved at this point. Fetching the total count is
+    // just for display — if it fails, fall back quietly instead of
+    // showing an error for something that already succeeded.
+    try {
+      const allRows = await (await fetch(SHEETDB_URL)).json();
+      total = Array.isArray(allRows) ? allRows.length : 0;
+    } catch (err) {
+      total = 0;
+    }
+
+    const code = 'SG-' + String(total || 1).padStart(3, '0');
+
+    form.hidden = true;
+    const confirmPanel = root.querySelector('#confirmPanel');
+    root.querySelector('#confirmCode').textContent = code;
+    root.querySelector('#confirmCount').textContent = total
+      ? (total + ' player' + (total === 1 ? '' : 's') + ' locked in so far.')
+      : '';
+    confirmPanel.hidden = false;
+    launchConfetti();
+  });
+
+  const adminLink = root.querySelector('#adminLink');
+  const adminPanel = root.querySelector('#adminPanel');
+  const adminError = root.querySelector('#adminError');
+  const adminList = root.querySelector('#adminList');
+  const adminToolbar = root.querySelector('#adminToolbar');
+  const adminCountLabel = root.querySelector('#adminCountLabel');
+  const adminCopyBtn = root.querySelector('#adminCopy');
+  const adminExportBtn = root.querySelector('#adminExport');
+  let loadedEntries = [];
+
+  adminLink.addEventListener('click', () => {
+    adminPanel.hidden = !adminPanel.hidden;
+  });
+
+  root.querySelector('#adminSubmit').addEventListener('click', async () => {
+    const code = root.querySelector('#adminCode').value.trim();
+    adminError.hidden = true;
+    adminToolbar.hidden = true;
+
+    if (code !== ADMIN_PASSCODE) {
+      adminList.innerHTML = '';
+      adminError.hidden = false;
+      return;
+    }
+
+    adminList.innerHTML = '<p class="admin-empty">Loading registrations...</p>';
+
+    try {
+      const rows = await (await fetch(SHEETDB_URL)).json();
+      if (rows.length === 0) {
+        adminList.innerHTML = '<p class="admin-empty">No registrations yet.</p>';
+        loadedEntries = [];
+        return;
+      }
+      loadedEntries = rows.map(r => ({
+        name: r['Name'],
+        userid: r['User ID'],
+        game: r['Game'],
+        played: r['Played Before'],
+        time: r['Time Available'],
+        nightSpeak: r['Night Speak'],
+        query: r['Note'],
+        ts: r['Timestamp']
+      }));
+
+      adminCountLabel.textContent = loadedEntries.length + ' registration' + (loadedEntries.length === 1 ? '' : 's');
+      adminToolbar.hidden = false;
+      adminCopyBtn.textContent = 'Copy as text';
+      adminCopyBtn.classList.remove('copied');
+      adminExportBtn.textContent = 'Download Excel';
+
+      adminList.innerHTML = loadedEntries.map((entry, i) => `
+        <div class="admin-entry">
+          <div class="row1">${i + 1}. ${escapeHtml(entry.name)} — ${escapeHtml(entry.userid)}</div>
+          <div class="row2">
+            Game: ${escapeHtml(entry.game)} (played before: ${escapeHtml(entry.played)})<br>
+            Time available: ${escapeHtml(entry.time)} · Night speak: ${escapeHtml(entry.nightSpeak)}
+            ${entry.query ? '<br>Note: ' + escapeHtml(entry.query) : ''}
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      adminList.innerHTML = '<p class="admin-empty">Could not load registrations. Please try again.</p>';
+    }
+  });
+
+  adminCopyBtn.addEventListener('click', async () => {
+    if (!loadedEntries.length) return;
+    const text = loadedEntries.map((entry, i) =>
+      `${i + 1}. ${entry.name} — ${entry.userid}\n` +
+      `   Game: ${entry.game} (played before: ${entry.played})\n` +
+      `   Time available: ${entry.time} | Night speak: ${entry.nightSpeak}` +
+      (entry.query ? `\n   Note: ${entry.query}` : '')
+    ).join('\n\n');
+    try {
+      await navigator.clipboard.writeText(text);
+      adminCopyBtn.textContent = 'Copied!';
+      adminCopyBtn.classList.add('copied');
+      setTimeout(() => {
+        adminCopyBtn.textContent = 'Copy as text';
+        adminCopyBtn.classList.remove('copied');
+      }, 1600);
+    } catch (e) {
+      adminCopyBtn.textContent = 'Copy failed';
+    }
+  });
+
+  adminExportBtn.addEventListener('click', () => {
+    if (!loadedEntries.length || typeof XLSX === 'undefined') return;
+    const rows = loadedEntries.map((entry, i) => ({
+      '#': i + 1,
+      Name: entry.name,
+      'User ID': entry.userid,
+      Game: entry.game,
+      'Played Before': entry.played,
+      'Time Available': entry.time,
+      'Night Speak': entry.nightSpeak,
+      Note: entry.query || '',
+      Registered: entry.ts || ''
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Registrations');
+    XLSX.writeFile(wb, 'star-gaming-registrations.xlsx');
+  });
+})();
+</script>
+
+</body>
+</html>
